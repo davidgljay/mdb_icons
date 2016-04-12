@@ -15,7 +15,7 @@ AWS.config.update({
 var dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'}),
 s3 = new AWS.S3();
 
-var delay = 500;
+var delay = 1500;
 
 //Get tags in need of icons;
 var get_tags_promise = new Promise(function(resolve, reject) {
