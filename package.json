@@ -1,0 +1,11 @@
+{
+  "name": "mdb_icons",
+  "version": "1.0.0",
+  "description": "Small service to grab icons for the MayorsDB database.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Jay",
+  "license": "ISC"
+}
