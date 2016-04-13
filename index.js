@@ -17,6 +17,11 @@ s3 = new AWS.S3();
 
 var delay = 1500;
 
+var nounproject = new NounProject({
+    key: process.env.NOUN_PROJ_KEY,
+    secret: process.env.NOUN_PROJ_SECRET
+})
+
 //Get tags in need of icons;
 var get_tags_promise = new Promise(function(resolve, reject) {
     var needs_tags = [];
@@ -55,7 +60,18 @@ var get_tags_promise = new Promise(function(resolve, reject) {
     get_tags();
 })
 
-get_tags_promise.then(getAndPostIcons);
+get_tags_promise.then(getAndPostIcons)
+    .then(function() {
+        setTimeout(function() {
+            process.exit();
+        },delay)
+    },
+    function(err) {
+        logger.info(err);
+        setTimeout(function() {
+            process.exit();
+        },delay)
+    });
 
 
 function getAndPostIcons(needs_tags) {
@@ -68,20 +84,16 @@ function getAndPostIcons(needs_tags) {
     return promise;
 };
 
-function getIcon (tag) {
+function getIcon(tag) {
     return function(retry) {
         return new Promise(function(resolve,reject) {
-            var nounproject = new NounProject({
-                key: process.env.NOUN_PROJ_KEY,
-                secret: process.env.NOUN_PROJ_SECRET
-            }).getIconsByTerm(tag, {limit: 1}, function (err, data) {
+            nounproject.getIconsByTerm(tag, {limit: 1}, function (err, data) {
                 if (err) {
                     if (retry) {
                         reject("Error Contacting Noun Project: " + err) 
                     } else {
                         //If the whole tag is rejected, try just the first word.
-                        //TODO:Make recursive
-                        resolve(getIcon(tag.split(' ')[0])(true));
+                        resolve(getIcon(tag.split(' ')[0])(true));                            
                     }
                 }
                 else {
